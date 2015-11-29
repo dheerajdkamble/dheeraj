@@ -2,29 +2,63 @@ package com.hackethon.spring.model;
 
 import java.util.Date;
 
-import org.springframework.stereotype.Component;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-@Component
+@Entity
+@Table(name="USER")
 public class User {
 
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int userID;
+	
+	@Column
 	private String firstName;
+	
+	@Column
 	private String middleName;
+	
+	@Column
 	private String lastName;
+	
+	@Column
 	private Date DateOfBirth;
+	
+	@Column
 	private String gender;
-	private boolean isPPUpload;
-	private boolean isPanUpload;
-	private boolean isDLUpload;
+	
+	@Column
 	private String email;
+	
+	@Column
 	private int mobileNumber;
+	
+	@Column
 	private String street;
-	private String subDistrit;
-	private String district;
-	private String state;
-	private int pincode;
-	private String aadharNumber;
 
+	@Column
+	private String subDistrit;
+	
+	@Column
+	private String district;
+	
+	@Column
+	private String state;
+	
+	@Column
+	private int pincode;
+	
+	@Column
+	private String aadharNumber;
+	
+	@Column
+	private boolean agree;
+	
 	public String getAadharNumber() {
 		return aadharNumber;
 	}
@@ -63,30 +97,6 @@ public class User {
 
 	public void setGender(String gender) {
 		this.gender = gender;
-	}
-
-	public boolean isPPUpload() {
-		return isPPUpload;
-	}
-
-	public void setPPUpload(boolean isPPUpload) {
-		this.isPPUpload = isPPUpload;
-	}
-
-	public boolean isPanUpload() {
-		return isPanUpload;
-	}
-
-	public void setPanUpload(boolean isPanUpload) {
-		this.isPanUpload = isPanUpload;
-	}
-
-	public boolean isDLUpload() {
-		return isDLUpload;
-	}
-
-	public void setDLUpload(boolean isDLUpload) {
-		this.isDLUpload = isDLUpload;
 	}
 
 	public String getEmail() {
@@ -155,5 +165,17 @@ public class User {
 
 	public void setDistrict(String district) {
 		this.district = district;
+	}
+
+	public void setUserID(int userID) {
+		this.userID = userID;
+	}
+
+	public boolean isAgree() {
+		return agree;
+	}
+
+	public void setAgree(boolean agree) {
+		this.agree = agree;
 	}
 }

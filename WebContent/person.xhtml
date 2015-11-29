@@ -6,7 +6,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
 <!-- xmlns:rich="http://richfaces.org/rich"
 	xmlns:a4j="http://richfaces.org/a4j"> -->
 <h:head>
@@ -51,136 +52,187 @@
 </style>
 </h:head>
 <h:body>
-	<h1>Add a Person</h1>
-	<h:form enctype="multipart/form-data">
-		<table>
-			<tr>
-				<td><label>First Name</label></td>
-				<td><h:inputText id="fname" value="#{userBB.user.firstName}"></h:inputText>
-				</td>
-			</tr>
-			<tr>
-				<td><label>Middle Name</label></td>
-				<td><h:inputText id="mname" value="#{userBB.user.middleName}"></h:inputText>
-				</td>
-			</tr>
-			<tr>
-				<td><label>Last Name</label></td>
-				<td><h:inputText id="lname" value="#{userBB.user.lastName}"></h:inputText>
-				</td>
-			</tr>
-			<tr>
-				<td><label>Gender</label></td>
-				<td><h:selectOneMenu id="gender" value="#{userBB.user.gender}">
-						<f:selectItem itemLabel="Male" itemValue="male" />
-						<f:selectItem itemLabel="Female" itemValue="female" />
-					</h:selectOneMenu></td>
-			</tr>
-			<tr>
-				<td><label>Date of Birth</label></td>
-				<td><h:panelGrid columns="3">
-						<h:inputText id="date" value="#{userBB.user.dateOfBirth}"
-							size="20" label="Date of Birth">
-							<f:convertDateTime pattern="d-M-yyyy" />
-						</h:inputText>
-						<h:message for="date" style="color:red" />
-					</h:panelGrid> <!-- <rich:calendar value="#{userBB.user.dateOfBirth}" id="calendar"
-							popup="true"
-							datePattern="dd-MM-YYYY"
-							showApplyButton="true" cellWidth="24px"
-							cellHeight="22px" style="width:200px"
-							disabled="false">
-						</rich:calendar> --></td>
-			</tr>
-			<tr>
-				<td><label>Phone</label></td>
-				<td><h:inputText id="phone" value="#{userBB.user.mobileNumber}"></h:inputText>
-				</td>
-			</tr>
-			<tr>
-				<td><label>Email Id</label></td>
-				<td><h:inputText id="email" value="#{userBB.user.email}"></h:inputText>
-				</td>
-			</tr>
-			<tr>
-				<td><label style="font-size: 18px; font-weight: bold;">Address</label></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td><label>Street</label></td>
-				<td><h:inputText id="street" value="#{userBB.user.street}"></h:inputText>
-				</td>
-			</tr>
-			<tr>
-				<td><label>District</label></td>
-				<td><h:inputText id="subdistrict"
-						value="#{userBB.user.subDistrit}"></h:inputText></td>
-			</tr>
-			<tr>
-				<td><label>Sub District</label></td>
-				<td><h:inputText id="district" value="#{userBB.user.district}"></h:inputText>
-				</td>
-			</tr>
-			<tr>
-				<td><label>State</label></td>
-				<td><h:inputText id="state" value="#{userBB.user.state}"></h:inputText>
-				</td>
-			</tr>
-			<tr>
-				<td><label>Pin Code</label></td>
-				<td><h:inputText id="pincode" value="#{userBB.user.pincode}"></h:inputText>
-				</td>
-			</tr>
-			<tr>
-				<td><label style="font-size: 18px; font-weight: bold;">Documents</label></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td><label>Identification Proof Type</label></td>
-				<td><h:selectOneMenu id="idprooftype"
-						value="#{userBB.idProofType}">
-						<f:selectItem itemLabel="Adhar Card" itemValue="1" />
-						<f:selectItem itemLabel="Driving License" itemValue="2" />
-						<f:selectItem itemLabel="Passport" itemValue="3" />
-					</h:selectOneMenu></td>
-				<td><label>Identification Id</label></td>
-				<td><h:inputText id="idproofid" value="#{userBB.idProofId}" />
-				</td>
-				<td><h:inputFile id="file" value="#{userBB.file}" /> <h:commandButton
-						value="Upload" action="#{userBB.upload}">
-						<f:setPropertyActionListener value="#{userBB.file}"
-							target="#{userBB.file}" />
-					</h:commandButton> <h:outputText value="Uploaded successfully!"
-						rendered="#{userBB.uploadedSuccessful}" /></td>
-			</tr>
-			<!-- <tr>
-				<td><label>Identification Proof Type</label></td>
-				<td><h:selectOneMenu id="idprooftype" value="#{userBB.idProofType}">
-						<f:selectItem itemLabel="Adhar Card" itemValue="1" />
-						<f:selectItem itemLabel="Driving License" itemValue="2" />
-						<f:selectItem itemLabel="Passport" itemValue="3" />
-					</h:selectOneMenu></td>
-			</tr> -->
-			<tr>
-				<td><h:commandButton action="#{userBB.submit}" value="Submit" >
-					<!-- <f:ajax event="click" render="errorsPanel"  /> -->
-				</h:commandButton>
+	<h:outputStylesheet name="css/application.css" />
+	<p style="text-align: center;">
+		<img src="barclays_logo_2480.jpg" alt="HTML5 Icon"
+			style="width: 275px; height: 60px;" />
+	</p>
+	<h:form>
 
-				</td>
-				<td><h:commandButton action="#{userBB.reset}" value="Reset" immediate="true"></h:commandButton>
-				</td>
-			</tr>
+		<p:growl id="growl" showDetail="false" />
+		<p:fieldset legend="Personal Information" style="margin-bottom:20px">
+			<h:panelGrid columns="4" cellpadding="5">
+				<p:outputLabel for="fname" value="First Name: " />
+				<p:inputText id="fname" value="#{userBB.user.firstName}"
+					required="true">
+					<p:message for="fname" display="tooltip" />
+				</p:inputText>
 
-		</table>
-		
-		<h:panelGroup id="errorsPanel" rendered="#{not empty userBB.errors}">
+				<p:outputLabel for="mname" value="Middle Name: " />
+				<p:inputText id="mname" value="#{userBB.user.middleName}"
+					required="true">
+					<p:message for="mname" display="tooltip" />
+				</p:inputText>
+
+				<p:outputLabel for="lname" value="Last Name: " />
+				<p:inputText id="lname" value="#{userBB.user.lastName}"
+					required="true">
+					<p:message for="lname" display="tooltip" />
+				</p:inputText>
+
+				<p:outputLabel for="gender" value="Gender:" />
+				<p:selectOneMenu id="gender" value="#{userBB.user.lastName}"
+					style="width:125px" required="true">
+					<f:selectItem itemLabel="Male" itemValue="male" />
+					<f:selectItem itemLabel="Female" itemValue="female" />
+					<f:selectItem itemLabel="Transgender" itemValue="trans" />
+				</p:selectOneMenu>
+
+				<p:outputLabel for="dob" value="Date of Birth: " />
+				<p:inputMask id="dob" value="#{userBB.user.dateOfBirth}"
+					mask="99-99-9999" required="true">
+					<p:message for="dob" display="tooltip" />
+				</p:inputMask>
+
+				<p:outputLabel for="email" value="Email Id: " />
+				<p:inputMask id="email" value="#{userBB.user.email}" mask="@.com"
+					required="true">
+					<p:message for="email" display="tooltip" />
+				</p:inputMask>
+
+				<p:outputLabel for="phone" value="Mobile Number: " />
+				<p:inputMask id="phone" value="#{userBB.user.mobileNumber}"
+					mask="9999999999" required="true">
+					<p:message for="phone" display="tooltip" />
+				</p:inputMask>
+				<p:commandButton value="Verify" type="button" onclick="dlg2.show();" />
+
+
+			</h:panelGrid>
+		</p:fieldset>
+		<p:fieldset legend="Contact Information" style="margin-bottom:20px">
+			<br />
+			<h:outputText value="Address" />
+			<h:panelGrid columns="4" cellpadding="5">
+				<p:outputLabel for="street" value="Street: " />
+				<p:inputText id="street" value="#{userBB.user.street}"
+					required="true">
+					<p:message for="street" display="tooltip" />
+				</p:inputText>
+
+				<p:outputLabel for="subdistrict" value="Sub District :  " />
+				<p:inputText id="subdistrict" value="#{userBB.user.subDistrit}">
+					<p:message for="subdistrict" display="tooltip" />
+				</p:inputText>
+
+				<p:outputLabel for="district" value="District :  " />
+				<p:inputText id="district" value="#{userBB.user.district}"
+					required="true">
+					<p:message for="district" display="tooltip" />
+				</p:inputText>
+
+				<p:outputLabel for="state" value="State :  " />
+				<p:inputText id="state" value="#{userBB.user.state}" required="true">
+					<p:message for="state" display="tooltip" />
+				</p:inputText>
+
+				<p:outputLabel for="pin" value="Pin Code: " />
+				<p:inputMask id="pin" value="#{userBB.user.pincode}" required="true"
+					mask="999 999">
+					<p:message for="pin" display="tooltip" />
+				</p:inputMask>
+			</h:panelGrid>
+		</p:fieldset>
+
+		<p:fieldset legend="Document Information" style="margin-bottom:20px">
+			<h:panelGrid columns="4" cellpadding="5">
+				<p:outputLabel for="aadharnumber" value="Aadhar Number:" />
+				<p:inputMask id="aadharnumber" mask="9999 9999 9999"
+					value="#{userBB.user.aadharNumber}" required="true">
+				</p:inputMask>
+
+				<p:outputLabel for="aadharcardimage" value="Aadhar Card Image:" />
+				<p:fileUpload id="aadharcardimage"
+					fileUploadListener="#{userBB.upload}"
+					allowTypes="/(\.|\/)(gif|jpe?g|png)$/" sizeLimit="500000"
+					description="Select Images" update="growl" showButtons="false"
+					required="true" />
+			</h:panelGrid>
+		</p:fieldset>
+
+		<p:selectBooleanCheckbox id="termsandconditions"
+			value="#{userBB.user.agree}" label="I accept Terms and conditions!"
+			style="padding-left:10px" />
+		<p:outputLabel for="termsandconditions"
+			value="I accept Terms and conditions!" style="padding-left:10px"></p:outputLabel>
+
+		<br />
+		<br />
+		<h:panelGrid columns="2" cellpadding="15" style="text-align:center;">
+			<p:commandButton value="Submit" icon="ui-icon-check" update="growl"
+				style="margin-left:10px;" />
+
+			<p:commandButton value="Reset" icon="ui-icon-check" update="growl"
+				style="margin-left:10px;" />
+		</h:panelGrid>
+
+
+		<p:dialog header="OTP Verification" widgetVar="dlg2" modal="true"
+			height="100">
+			<p:inputMask value="#{userBB.onlineTransactionPin}" mask="999999" />
+		</p:dialog>
+
+		<!-- <h:panelGroup id="errorsPanel" rendered="#{not empty userBB.errors}">
 			<h:dataTable value="#{userBB.errors}" var="error">
 				<h:column>
-					<span style="color: red; padding: 0 0 0 0;"><h:outputText value="#{error}"></h:outputText></span>
+					<span style="color: red; padding: 0 0 0 0;"><h:outputText
+							value="#{error}"></h:outputText></span>
 				</h:column>
 			</h:dataTable>
-		</h:panelGroup>
+		</h:panelGroup> -->
 	</h:form>
+	<!-- <script type="text/javascript">
+		/**
+		 * Faces Validator
+		 */
+		PrimeFaces.validator['custom.emailValidator'] = {
+
+			pattern : /\S+@\S+/,
+
+			validate : function(element, value) {
+				//use element.data() to access validation metadata, in this case there is none.
+				if (!this.pattern.test(value)) {
+					throw {
+						summary : 'Validation Error',
+						detail : value + ' is not a valid email.'
+					}
+				}
+			}
+		};
+
+		/**
+		 * Bean validator
+		 */
+		PrimeFaces.validator['Email'] = {
+
+			pattern : /\S+@\S+/,
+
+			MESSAGE_ID : 'org.primefaces.examples.validate.email.message',
+
+			validate : function(element, value) {
+				var vc = PrimeFaces.util.ValidationContext;
+
+				if (!this.pattern.test(value)) {
+					var msgStr = element.data('p-email-msg'), msg = msgStr ? {
+						summary : msgStr,
+						detail : msgStr
+					} : vc.getMessage(this.MESSAGE_ID);
+
+					throw msg;
+				}
+			}
+		};
+	</script> -->
 
 	<br />
 

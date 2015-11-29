@@ -1,34 +1,38 @@
 package com.hackethon.spring.bb;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
-import javax.servlet.http.Part;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 
-import org.springframework.stereotype.Component;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 
 import com.hackethon.spring.model.User;
-import com.hackethon.spring.util.ValidationUtil;
+import com.hackethon.spring.service.UserService;
 
-@Component
-@ManagedBean
-@RequestScoped
+@Controller
+@Scope(value="session")
 public class UserBB implements Serializable {
-
+	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2659752014533452810L;
 
+	private String destination="C:\\Hackethon\\";
+	
 	private User user;
-
-	private Part file;
 
 	private String fileContent;
 
@@ -39,6 +43,17 @@ public class UserBB implements Serializable {
 	private boolean uploadedSuccessful;
 
 	private List<String> errors;
+
+	private UploadedFile file;
+	
+	private int onlineTransactionPin;
+
+	@Autowired
+	private UserService userService;
+	
+	public void setFile(UploadedFile file) {
+		this.file = file;
+	}
 
 	public User getUser() {
 		if (user == null) {
@@ -57,14 +72,6 @@ public class UserBB implements Serializable {
 
 	public void setIdProofType(int idProofType) {
 		this.idProofType = idProofType;
-	}
-
-	public Part getFile() {
-		return file;
-	}
-
-	public void setFile(Part file) {
-		this.file = file;
 	}
 
 	public String getFileContent() {
@@ -102,35 +109,29 @@ public class UserBB implements Serializable {
 		this.errors = errors;
 	}
 
-	public String upload() {
-		uploadedSuccessful = false;
-		File file;
-		String fileName = null;
-		if (idProofType == 1) {
-			fileName = idProofId;
-			System.out.println(fileName);
-		} else if (idProofType == 2) {
-			fileName = idProofId;
-		} else if (idProofType == 3) {
-			fileName = idProofId;
+	public int getOnlineTransactionPin() {
+		return onlineTransactionPin;
+	}
+
+	public void setOnlineTransactionPin(int onlineTransactionPin) {
+		this.onlineTransactionPin = onlineTransactionPin;
+	}
+
+	public void upload() {
+		if (file != null) {
+			FacesMessage message = new FacesMessage("Succesful", file.getFileName() + " is uploaded.");
+			FacesContext.getCurrentInstance().addMessage(null, message);
 		}
-		try {
-			file = File.createTempFile(fileName, ".jpg", new File("C:\\Hackethon"));
-			this.file.write(file.getAbsolutePath());
-			uploadedSuccessful = true;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	public String submit() {
-		System.out.println("submit method called");
-		errors = ValidationUtil.validate(this.user);
-		for (String string : errors) {
-			System.out.println(string);
-		}
+		userService.saveUser(user);
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage("Successful", "Account successfully created for " + user.getFirstName()));
+//		errors = ValidationUtil.validate(this.user);
+//		for (String string : errors) {
+//			System.out.println(string);
+//		}
 		return null;
 	}
 
@@ -141,5 +142,45 @@ public class UserBB implements Serializable {
 		fileContent = null;
 		uploadedSuccessful = false;
 		return null;
+	}
+	
+	public void upload(FileUploadEvent event) {  
+        FacesMessage msg = new FacesMessage("Success! ", event.getFile().getFileName() + " is uploaded.");  
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+        // Do what you want with the file        
+        try {
+            copyFile(event.getFile().getFileName(), event.getFile().getInputstream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+ 
+    }  
+ 
+    public void copyFile(String fileName, InputStream in) {
+           try {
+              
+              
+                // write the inputStream to a FileOutputStream
+                OutputStream out = new FileOutputStream(new File(destination + fileName));
+              
+                int read = 0;
+                byte[] bytes = new byte[1024];
+              
+                while ((read = in.read(bytes)) != -1) {
+                    out.write(bytes, 0, read);
+                }
+              
+                in.close();
+                out.flush();
+                out.close();
+              
+                System.out.println("New file created!");
+                } catch (IOException e) {
+                System.out.println(e.getMessage());
+                }
+    }
+
+	public void setUserService(UserService userService) {
+		this.userService = userService;
 	}
 }

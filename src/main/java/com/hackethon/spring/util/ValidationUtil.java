@@ -26,20 +26,20 @@ public class ValidationUtil {
 				message.add("Lastname is invalid.");
 			}
 
-			if (user.getMiddleName() != null && user.getMiddleName().isEmpty()) {
-				message.add("MiddleName should not be empty.");
-			} else if (!user.getMiddleName().matches("[A-Z][a-z]")) {
-				message.add("MiddleName is invalid.");
-			}
+//			if (user.get != null && user.getMiddleName().isEmpty()) {
+//				message.add("MiddleName should not be empty.");
+//			} else if (!user.getMiddleName().matches("[A-Z][a-z]")) {
+//				message.add("MiddleName is invalid.");
+//			}
 
-			if (user.getMobileNumber() == 0) {
-				message.add("Invalid mobile number");
-			} else {
-				String mobile = String.valueOf(user.getMobileNumber());
-				if (!mobile.matches("\\d")) {
-					message.add("Invalid mobile number.");
-				}
-			}
+//			if (user.getMobileNumber() == 0) {
+//				message.add("Invalid mobile number");
+//			} else {
+//				String mobile = String.valueOf(user.getMobileNumber());
+//				if (!mobile.matches("\\d")) {
+//					message.add("Invalid mobile number.");
+//				}
+//			}
 
 			if (StringUtils.isEmpty(user.getAadharNumber())) {
 				message.add("Invalid mobile number");
@@ -49,13 +49,13 @@ public class ValidationUtil {
 					message.add("Invalid adhar number.");
 				}
 			}
-			if (StringUtils.isEmpty(user.getDistrict())) {
-				message.add("Invalid district");
-			} else {
-				if (!user.getDistrict().matches("[A-Z][a-z]")) {
-					message.add("Invalid district.");
-				}
-			}
+//			if (StringUtils.isEmpty(user.getDistrict())) {
+//				message.add("Invalid district");
+//			} else {
+//				if (!user.getDistrict().matches("[A-Z][a-z]")) {
+//					message.add("Invalid district.");
+//				}
+//			}
 			if (user.getState().isEmpty()) {
 				message.add("Invalid state");
 			} else {
