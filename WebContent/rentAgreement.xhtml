@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+<h:head>
+	<title>JSF Spring Hibernate Integration</title>
+	<style type="text/css">
+
+h1 {
+	font-family: cursive;
+	font-style: oblique;
+	color: purple;
+}	
+
+button, input[type="reset"], input[type="submit"], input[type="button"] {
+	height: 25px;
+	width:70px;
+	font-size : 13px;
+	text-align: center;
+	font-weight: bolder;
+}
+
+input[type="text"] {
+	height : 23px;
+	width:200px;
+	font-size: 13px;
+}
+
+#data tr td {
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+	border: 0 none !important;
+}
+
+#cellEditingTable tr th {
+	text-align: center;
+	font-size: 12px;
+}
+
+#cellEditingTable tr td {
+	text-align: center;
+	font-size: 12px;
+}
+
+#data tr td  {
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+	border: 0 none !important;
+}
+
+.tg {
+	border-collapse: collapse;
+	border-spacing: 0;
+	border-color: #ccc;
+}
+
+.tg td {
+	font-family: Arial, sans-serif;
+	font-size: 14px;
+	padding: 10px 5px;
+	border-style: solid;
+	border-width: 1px;
+	overflow: hidden;
+	word-break: normal;
+	border-color: #ccc;
+	color: #333;
+	background-color: #fff;
+}
+
+.tg th {
+	font-family: Arial, sans-serif;
+	font-size: 14px;
+	font-weight: normal;
+	padding: 10px 5px;
+	border-style: solid;
+	border-width: 1px;
+	overflow: hidden;
+	word-break: normal;
+	border-color: #ccc;
+	color: #333;
+	background-color: #f0f0f0;
+}
+
+.tg .tg-4eph {
+	background-color: #f9f9f9
+}
+
+.rf-dt-srt-btn {
+	display: inline-block;
+    height: 1em;
+    vertical-align: middle;
+    width: 8px;
+}
+</style>
+</h:head>
+<f:view>
+	<h1 align="center">Sai Homes Real Estate Agency</h1>
+	<h:form id="form" prependId="false" styleClass="ra">
+			<p:growl id="growl" />
+	
+			<h:panelGrid columns="6" id="data" width="100%" cellspacing="10"
+				border="1">
+				<h:outputText value="Owner Name" />
+				<h:inputText id="newOwnerName"
+					value="#{userBB.rentAgreement.ownerName}" />
+
+				<h:outputText value="Tenant Name" />
+				<h:inputText id="newTenantName"
+					value="#{userBB.rentAgreement.rentedTo}" />
+
+				<h:outputText value="Agreement Date" />
+				<rich:calendar value="#{userBB.rentAgreement.agreementFromDate}"
+					popup="true" datePattern="dd/MM/yyyy" showApplyButton="false"
+					cellWidth="24px" cellHeight="22px" style="width:200px" />
+
+				<h:outputText value="End Date" />
+				<rich:calendar value="#{userBB.rentAgreement.agreementToDate}"
+					popup="true" datePattern="dd/MM/yyyy" showApplyButton="false"
+					cellWidth="24px" cellHeight="22px" style="width:200px" />
+
+
+				<h:outputText value="Address" />
+				<h:inputText id="newAddress" value="#{userBB.rentAgreement.address}" />
+
+				<h:outputText value="Owner Contact" />
+				<h:inputText id="newOwnerContactNumber"
+					value="#{userBB.rentAgreement.ownerContactNumber}" maxlength="10" />
+
+				<h:outputText value="Tenant Contact" />
+				<h:inputText id="newTenantContactNumber"
+					value="#{userBB.rentAgreement.tenantContactNumber}" maxlength="10" />
+
+				<h:outputText value="Owner Email" />
+				<h:inputText id="newOwnerEmail"
+					value="#{userBB.rentAgreement.ownerEmail}" />
+
+				<h:outputText value="Tenant Email" />
+				<h:inputText id="newTenantEmail"
+					value="#{userBB.rentAgreement.tenantEmail}" />
+
+				<h:outputText value="Deposit Amount" />
+				<h:inputText id="deposit" value="#{userBB.rentAgreement.deposit}" />
+
+				<h:outputText value="Rent Amount" />
+				<h:inputText id="rent" value="#{userBB.rentAgreement.rent}" />
+				
+
+				<h:outputText value="Referred By" />
+				<h:inputText id="refferredBy"
+					value="#{userBB.rentAgreement.referrer}" />
+
+				
+				<h:outputText value="" />
+				<h:outputText value="" />
+				<a4j:commandButton id="addButton" value="Save"
+					style="margin-top : 15px;" action="#{userBB.handleRecord}"
+					render="growl, data, cellEditingTable">
+				</a4j:commandButton>
+				<a4j:commandButton id="resetButton" value="Reset"
+					style="margin-top : 15px" action="#{userBB.reset}" render="data">
+				</a4j:commandButton>
+				<h:outputText value="" />
+				<h:outputText value="" />
+
+			</h:panelGrid>
+
+			<br />
+
+			<rich:dataTable id="cellEditingTable" var="agreement"
+				value="#{userBB.rentAgreements}" style="width:100%" rowKeyVar="index" >
+				<rich:column sortBy="#{agreement.ownerName}">
+					<f:facet name="header">
+						<h:outputText value="Owner" />
+					</f:facet>
+					<h:outputText id="ownerName" value="#{agreement.ownerName}" />
+				</rich:column>
+				<rich:column>
+					<f:facet name="header">
+						<h:outputText value="Tenant" />
+					</f:facet>
+					<h:outputText id="rentedTo" value="#{agreement.rentedTo}" />
+				</rich:column>
+				<rich:column sortBy="#{agreement.agreementFromDateView}" style="width:50px;">
+					<f:facet name="header">
+						<h:outputText value="St. Date" />
+					</f:facet>
+					<h:outputText value="#{agreement.agreementFromDateView}">
+						<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</rich:column>
+				<rich:column sortBy="#{agreement.agreementToDateView}" style="width:50px;">
+					<f:facet name="header">
+						<h:outputText value="End Date" />
+					</f:facet>
+					<h:outputText value="#{agreement.agreementToDateView}">
+						<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</rich:column>
+				<rich:column>
+					<f:facet name="header">
+						<h:outputText value="Address" />
+					</f:facet>
+					<h:outputText id="address" value="#{agreement.address}" />
+				</rich:column>
+				<rich:column>
+					<f:facet name="header">
+						<h:outputText value="Owner No" />
+					</f:facet>
+					<h:outputText id="ownerContactNumber"
+						value="#{agreement.ownerContactNumber}" />
+				</rich:column>
+				<rich:column>
+					<f:facet name="header">
+						<h:outputText value="Tenant No" />
+					</f:facet>
+					<h:outputText id="tenantContactNumber"
+						value="#{agreement.tenantContactNumber}" />
+				</rich:column>
+				<rich:column>
+					<f:facet name="header">
+						<h:outputText value="Owner Email" />
+					</f:facet>
+					<h:outputText id="ownerEmail" value="#{agreement.ownerEmail}" />
+				</rich:column>
+				<rich:column>
+					<f:facet name="header">
+						<h:outputText value="Tenant Email" />
+					</f:facet>
+					<h:outputText id="tenantEmail" value="#{agreement.tenantEmail}" />
+				</rich:column>
+				<rich:column sortBy="#{agreement.deposit}" style="width:75px;">
+					<f:facet name="header">
+						<h:outputText value="Deposit Amount" />
+					</f:facet>
+					<h:outputText id="deposit" value="#{agreement.deposit}" />
+				</rich:column>
+				<rich:column sortBy="#{agreement.rent}" style="width:51px;">
+					<f:facet name="header">
+						<h:outputText value="Rent" />
+					</f:facet>
+					<h:outputText id="rent" value="#{agreement.rent}" />
+				</rich:column>
+				<rich:column sortBy="#{agreement.referrer}">
+					<f:facet name="header">
+						<h:outputText value="Referred By" />
+					</f:facet>
+					<h:outputText id="referredBy" value="#{agreement.referrer}" />
+				</rich:column>
+				<rich:column style="width:50px;">
+					<f:facet name="header">
+						<h:outputText value="Action" />
+					</f:facet>
+					<a4j:commandLink value="Edit" render="data, addButton"
+						style="margin-right:5px;">
+						<f:setPropertyActionListener value="#{agreement}"
+							target="#{userBB.rentAgreement}" />
+					</a4j:commandLink>
+					<a4j:commandLink value="Delete" render="cellEditingTable"
+						action="#{userBB.delete}">
+						<f:setPropertyActionListener value="#{index}"
+							target="#{userBB.index}" />
+					</a4j:commandLink>
+				</rich:column>
+			</rich:dataTable>
+	</h:form>
+</f:view>
+</html>

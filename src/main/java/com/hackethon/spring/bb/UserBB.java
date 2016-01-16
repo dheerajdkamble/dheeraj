@@ -1,186 +1,165 @@
 package com.hackethon.spring.bb;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.ManagedBean;
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.FacesMessage.Severity;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.UploadedFile;
+import org.primefaces.event.RowEditEvent;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 
-import com.hackethon.spring.model.User;
-import com.hackethon.spring.service.UserService;
+import com.hackethon.spring.entity.RentAgreement;
+import com.hackethon.spring.service.RentAgreementService;
 
-@Controller
-@Scope(value="session")
+@ManagedBean
+@SessionScoped
 public class UserBB implements Serializable {
-	
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2659752014533452810L;
+	private static final long serialVersionUID = -1049952560494748848L;
 
-	private String destination="C:\\Hackethon\\";
-	
-	private User user;
+	private RentAgreement rentAgreement;
 
-	private String fileContent;
+	private List<RentAgreement> rentAgreements;
 
-	private int idProofType;
+	private int index;
 
-	private String idProofId;
+	public int getIndex() {
+		return index;
+	}
 
-	private boolean uploadedSuccessful;
-
-	private List<String> errors;
-
-	private UploadedFile file;
-	
-	private int onlineTransactionPin;
+	public void setIndex(int index) {
+		this.index = index;
+	}
 
 	@Autowired
-	private UserService userService;
-	
-	public void setFile(UploadedFile file) {
-		this.file = file;
-	}
+	private RentAgreementService rentAgreementService;
 
-	public User getUser() {
-		if (user == null) {
-			user = new User();
-		}
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public int getIdProofType() {
-		return idProofType;
-	}
-
-	public void setIdProofType(int idProofType) {
-		this.idProofType = idProofType;
-	}
-
-	public String getFileContent() {
-		return fileContent;
-	}
-
-	public void setFileContent(String fileContent) {
-		this.fileContent = fileContent;
-	}
-
-	public String getIdProofId() {
-		return idProofId;
-	}
-
-	public void setIdProofId(String idProofId) {
-		this.idProofId = idProofId;
-	}
-
-	public boolean isUploadedSuccessful() {
-		return uploadedSuccessful;
-	}
-
-	public void setUploadedSuccessful(boolean uploadedSuccessful) {
-		this.uploadedSuccessful = uploadedSuccessful;
-	}
-
-	public List<String> getErrors() {
-		if (errors == null) {
-			errors = new ArrayList<String>();
-		}
-		return errors;
-	}
-
-	public void setErrors(List<String> errors) {
-		this.errors = errors;
-	}
-
-	public int getOnlineTransactionPin() {
-		return onlineTransactionPin;
-	}
-
-	public void setOnlineTransactionPin(int onlineTransactionPin) {
-		this.onlineTransactionPin = onlineTransactionPin;
-	}
-
-	public void upload() {
-		if (file != null) {
-			FacesMessage message = new FacesMessage("Succesful", file.getFileName() + " is uploaded.");
-			FacesContext.getCurrentInstance().addMessage(null, message);
+	@PostConstruct
+	public void init() {
+		if (rentAgreements == null || rentAgreements.isEmpty()) {
+			rentAgreements = rentAgreementService.getRentAgreementList();
 		}
 	}
 
-	public String submit() {
-		userService.saveUser(user);
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage("Successful", "Account successfully created for " + user.getFirstName()));
-//		errors = ValidationUtil.validate(this.user);
-//		for (String string : errors) {
-//			System.out.println(string);
-//		}
+	public String handleRecord() {
+		if (!validateRecord()) {
+			rentAgreementService.addNewAgreement(rentAgreement);
+			rentAgreements = rentAgreementService.getRentAgreementList();
+			rentAgreement = new RentAgreement();			
+			FacesMessage msg = new FacesMessage("Record Saved successfully!");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
 		return null;
+	}
+
+	private boolean validateRecord() {
+		boolean inValid = false;
+		if (StringUtils.isEmpty(rentAgreement.getOwnerName())) {
+			FacesMessage msg = new FacesMessage("Please enter owner name");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			inValid = true;
+		}
+		if (StringUtils.isEmpty(rentAgreement.getRentedTo())) {
+			FacesMessage msg = new FacesMessage("Please enter tenant name");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			inValid = true;
+		}
+		if (rentAgreement.getAgreementFromDate() == null) {
+			FacesMessage msg = new FacesMessage("Please enter agreement start date");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			inValid = true;
+		}
+		if (rentAgreement.getAgreementToDate() == null) {
+			FacesMessage msg = new FacesMessage("Please enter agreement end date");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			inValid = true;
+		}
+		if (rentAgreement.getOwnerContactNumber() == 0) {
+			FacesMessage msg = new FacesMessage("Please owner contact number");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			inValid = true;
+		}
+		if (rentAgreement.getTenantContactNumber() == 0) {
+			FacesMessage msg = new FacesMessage("Please tenant contact number");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			inValid = true;
+		}
+		if (rentAgreement.getDeposit() == 0) {
+			FacesMessage msg = new FacesMessage("Please valid deposit amount");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			inValid = true;
+		}
+		if (rentAgreement.getRent() == 0) {
+			FacesMessage msg = new FacesMessage("Please valid rent amount");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			inValid = true;
+		}
+		return inValid;
+	}
+
+	public void onRowEdit(RowEditEvent event) {
+		RentAgreement rentAgreement = (RentAgreement) event.getObject();
+		this.rentAgreement = rentAgreement;
+		if (!validateRecord()) {
+			rentAgreementService.addNewAgreement(rentAgreement);
+			rentAgreements = rentAgreementService.getRentAgreementList();
+			this.rentAgreement = new RentAgreement();
+			FacesMessage msg = new FacesMessage("Record saved successfully!");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+	}
+
+	public void onRowCancel(RowEditEvent event) {
+		FacesMessage msg = new FacesMessage("Edit Cancelled");
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+	}
+
+	public RentAgreement getRentAgreement() {
+		if (rentAgreement == null) {
+			rentAgreement = new RentAgreement();
+		}
+		return rentAgreement;
+	}
+
+	public void setRentAgreement(RentAgreement rentAgreement) {
+		this.rentAgreement = rentAgreement;
+	}
+
+	public List<RentAgreement> getRentAgreements() {
+		for (RentAgreement rentAgreement : rentAgreements) {
+			System.out.println("Name : " + rentAgreement.getRentedTo());
+			System.out.println("From : " + rentAgreement.getAgreementFromDate());
+			System.out.println("To : " + rentAgreement.getAgreementToDate());
+		}
+		return rentAgreements;
+	}
+
+	public void setRentAgreements(List<RentAgreement> rentAgreements) {
+		this.rentAgreements = rentAgreements;
+	}
+
+	public void setRentAgreementService(RentAgreementService rentAgreementService) {
+		this.rentAgreementService = rentAgreementService;
 	}
 
 	public String reset() {
-		user = new User();
-		errors = new ArrayList<String>();
-		file = null;
-		fileContent = null;
-		uploadedSuccessful = false;
+		rentAgreement = null;
 		return null;
 	}
-	
-	public void upload(FileUploadEvent event) {  
-        FacesMessage msg = new FacesMessage("Success! ", event.getFile().getFileName() + " is uploaded.");  
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-        // Do what you want with the file        
-        try {
-            copyFile(event.getFile().getFileName(), event.getFile().getInputstream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
- 
-    }  
- 
-    public void copyFile(String fileName, InputStream in) {
-           try {
-              
-              
-                // write the inputStream to a FileOutputStream
-                OutputStream out = new FileOutputStream(new File(destination + fileName));
-              
-                int read = 0;
-                byte[] bytes = new byte[1024];
-              
-                while ((read = in.read(bytes)) != -1) {
-                    out.write(bytes, 0, read);
-                }
-              
-                in.close();
-                out.flush();
-                out.close();
-              
-                System.out.println("New file created!");
-                } catch (IOException e) {
-                System.out.println(e.getMessage());
-                }
-    }
 
-	public void setUserService(UserService userService) {
-		this.userService = userService;
+	public String delete() {
+		RentAgreement removeRentAgreement = rentAgreements.remove(getIndex());
+		rentAgreementService.remove(removeRentAgreement);
+		rentAgreements = rentAgreementService.getRentAgreementList();
+		return null;
 	}
 }
